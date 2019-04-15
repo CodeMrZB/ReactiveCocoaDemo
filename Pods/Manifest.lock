@@ -1,0 +1,20 @@
+PODS:
+  - ReactiveObjC (3.1.0)
+  - XXNibBridge (2.3.1)
+
+DEPENDENCIES:
+  - ReactiveObjC (~> 3.1.0)
+  - XXNibBridge (~> 2.3.1)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - ReactiveObjC
+    - XXNibBridge
+
+SPEC CHECKSUMS:
+  ReactiveObjC: 2a38ea15335de4119d8b17caf1db1484f61db902
+  XXNibBridge: addb780e6db076eb2c61716aa60b176a6799b80f
+
+PODFILE CHECKSUM: bf5016d1a68b3143d1783d173600ecccc8449c6a
+
+COCOAPODS: 1.6.0.beta.2

@@ -1,0 +1,16 @@
+//
+//  ReactiveCocoa-Prefix.pch
+//  ReactiveCocoaDemo
+//
+//  Created by 张波 on 2019/4/14.
+//  Copyright © 2019 张波. All rights reserved.
+//
+
+#import <Availability.h>
+
+#ifdef __OBJC__
+	#import <Foundation/Foundation.h>
+	#import <UIKit/UIKit.h>
+	#import <ReactiveObjC.h>
+	#import "UITextField+ZBKit.h"
+#endif
