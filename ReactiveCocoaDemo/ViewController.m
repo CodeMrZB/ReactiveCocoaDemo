@@ -29,12 +29,44 @@
 {
 	[super viewDidLoad];
 	// Do any additional setup after loading the view
-	[self tempViewDemo];
+	
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
 	self.testLabel.text = [NSString stringWithFormat:@"%d", arc4random() % (100 - 2 + 1) + 2];
+	[self liftSelector];
+}
+
+- (void)liftSelector
+{
+	RACSignal *signal1 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"开始任务1");
+		[NSThread sleepForTimeInterval:1];
+		[subscriber sendNext:@"1"];
+		NSLog(@"完成任务1");
+		return nil;
+	}];
+	RACSignal *signal2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"开始任务2");
+		[NSThread sleepForTimeInterval:1];
+		[subscriber sendNext:@"2"];
+		NSLog(@"完成任务2");
+		return nil;
+	}];
+	RACSignal *signal3 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"开始任务3");
+		[NSThread sleepForTimeInterval:1];
+		[subscriber sendNext:@"3"];
+		NSLog(@"完成任务3");
+		return nil;
+	}];
+	[self rac_liftSelector:@selector(requestDataDone:str2:str3:) withSignalsFromArray:@[signal1,signal2,signal3]];
+}
+
+- (void)requestDataDone:(NSString *)str1 str2:(NSString *)str2 str3:(NSString *)str3
+{
+	NSLog(@"str1:%@----str2:%@---str3:%@", str1, str2, str3);
 }
 
 - (void)RACMacro
