@@ -35,7 +35,52 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
 	self.testLabel.text = [NSString stringWithFormat:@"%d", arc4random() % (100 - 2 + 1) + 2];
-	[self liftSelector];
+    RAC(self.testLabel, text) = self.textField.rac_textSignal;
+}
+
+- (void)sequence
+{
+    NSDictionary *dic = @{@"name":@"上海", @"age":@18, @"sex":@"男"};
+    [dic.rac_sequence.signal subscribeNext:^(id  _Nullable x) {
+        RACTupleUnpack(NSString *key, NSString *value) = x;
+        NSLog(@"key:%@, value:%@", key, value);
+    }];
+}
+
+- (void)takeUntil
+{
+    RACSubject *subject = [RACSubject subject];
+    RACSubject *signal = [RACSubject subject];
+    [[subject takeUntil:signal] subscribeNext:^(id  _Nullable x) {
+        NSLog(@"%@", x);
+    }];
+    [subject sendNext:@"1"];
+    [subject sendNext:@"2"];
+    [signal sendCompleted];
+    [subject sendNext:@"3"];
+}
+
+- (void)takeLast
+{
+    RACSubject *subject = [RACSubject subject];
+    [[subject takeLast:2] subscribeNext:^(id  _Nullable x) {
+        NSLog(@"%@", x);
+    }];
+    [subject sendNext:@"1"];
+    [subject sendNext:@"2"];
+    [subject sendNext:@"3"];
+    [subject sendCompleted];
+}
+
+- (void)take
+{
+    RACSubject *subject = [RACSubject subject];
+    [[subject take:2] subscribeNext:^(id  _Nullable x) {
+        NSLog(@"%@", x);
+    }];
+    [subject sendNext:@"1"];
+    [subject sendNext:@"2"];
+    [subject sendNext:@"3"];
 }
 
 - (void)liftSelector
@@ -44,8 +89,11 @@
 		NSLog(@"开始任务1");
 		[NSThread sleepForTimeInterval:1];
 		[subscriber sendNext:@"1"];
+        [subscriber sendCompleted];
 		NSLog(@"完成任务1");
-		return nil;
+        return [RACDisposable disposableWithBlock:^{
+            
+        }];
 	}];
 	RACSignal *signal2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
 		NSLog(@"开始任务2");
@@ -188,6 +236,9 @@
 	[dic.rac_sequence.signal subscribeNext:^(id  _Nullable x) {
 		RACTwoTuple *tuple = (RACTwoTuple *)x;
 		NSLog(@"key:%@---value:%@", tuple[0], tuple[1]);
+        //  RACTupleUnpack解包元祖，把元祖的数据，按顺序给参数里的变量赋值
+        RACTupleUnpack(NSString *key, NSString *value) = x;
+        NSLog(@"key:%@, value:%@", key, value);
 	}];
 }
 
