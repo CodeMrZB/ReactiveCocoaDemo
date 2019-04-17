@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import "TempView.h"
 #import "TempViewModel.h"
+#import "Person.h"
+#import <RACReturnSignal.h>
 
 @interface ViewController ()
 <
@@ -35,7 +37,134 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
 	self.testLabel.text = [NSString stringWithFormat:@"%d", arc4random() % (100 - 2 + 1) + 2];
-    RAC(self.testLabel, text) = self.textField.rac_textSignal;
+	[self timeout];
+}
+
+- (void)timeout
+{
+	[[[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		return nil;
+	}] timeout:2 onScheduler:[RACScheduler mainThreadScheduler]] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"x:%@", x);
+	} error:^(NSError * _Nullable error) {
+		NSLog(@"error:%@", error);
+	}];
+}
+
+- (void)delay
+{
+	
+}
+
+- (void)skip
+{
+	[[self.textField.rac_textSignal skip:1] subscribeNext:^(NSString * _Nullable x) {
+		NSLog(@"x:%@", x);
+	}];
+}
+
+- (void)bind
+{
+	[[self.textField.rac_textSignal bind:^RACSignalBindBlock _Nonnull{
+		return ^RACSignal *(id value, BOOL *stop) {
+			return [RACSignal return:[NSString stringWithFormat:@"输出:%@", value]];
+		};
+	}] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"%@", x);
+	}];
+}
+
+- (void)flattenMap
+{
+	[[self.textField.rac_textSignal flattenMap:^__kindof RACSignal * _Nullable(NSString * _Nullable value) {
+		return [RACReturnSignal return:[NSString stringWithFormat:@"输出:%@", value]];
+	}] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"%@", x);
+	}];
+}
+
+- (void)map
+{
+	[[self.textField.rac_textSignal map:^id _Nullable(NSString * _Nullable value) {
+		return [NSString stringWithFormat:@"输出:%@", value];
+	}] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"%@", x);
+	}];
+}
+
+- (void)flattenMapSignals
+{
+	RACSubject *subject = [RACSubject subject];
+	RACSubject *signal = [RACSubject subject];
+	[[subject flattenMap:^__kindof RACSignal * _Nullable(id  _Nullable value) {
+		return value;
+	}] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"%@", x);
+	}];
+	[subject sendNext:signal];
+	[signal sendNext:@"1"];
+}
+
+- (void)bind1
+{
+	[self.textField.rac_textSignal subscribeNext:^(NSString * _Nullable x) {
+		NSLog(@"输出：%@", x);
+	}];
+}
+
+- (void)tupleUnpack
+{
+	RACTuple *tuple = RACTuplePack(@"张三", @"18");
+	RACTupleUnpack(NSString *name, NSString *age) = tuple;
+	NSLog(@"name:%@, age:%@", name, age);
+}
+
+- (void)tuple
+{
+	RACTuple *tuple = RACTuplePack(@"1", @"2", @"3", @"4", @"张三");
+	NSLog(@"tuple:%@", tuple);
+}
+
+- (void)racObserve
+{
+	RAC(self.testLabel, text) = self.textField.rac_textSignal;
+	[RACObserve(self.testLabel, text) subscribeNext:^(id  _Nullable x) {
+		NSLog(@"text:%@",x);
+	}];
+}
+
+- (void)convertDicToModel1
+{
+	NSString *filePath = [[NSBundle mainBundle] pathForResource:@"data" ofType:@"plist"];
+	NSArray *datas = [NSArray arrayWithContentsOfFile:filePath];
+	NSMutableArray *persons = [NSMutableArray array];
+	for (NSDictionary *dic in datas)
+	{
+		Person *p = [Person personWithDic:dic];
+		[persons addObject:p];
+	}
+}
+
+- (void)convertDicToModel2
+{
+	NSString *filePath = [[NSBundle mainBundle] pathForResource:@"data" ofType:@"plist"];
+	NSArray *datas = [NSArray arrayWithContentsOfFile:filePath];
+	__block NSMutableArray *persons = [NSMutableArray array];
+	[datas.rac_sequence.signal subscribeNext:^(id  _Nullable x) {
+		Person *p = [Person personWithDic:x];
+		[persons addObject:p];
+	}];
+	
+}
+
+- (void)convertDicToModel3
+{
+	NSString *filePath = [[NSBundle mainBundle] pathForResource:@"data" ofType:@"plist"];
+	NSArray *datas = [NSArray arrayWithContentsOfFile:filePath];
+	NSArray *persons = [[datas.rac_sequence map:^id _Nullable(id  _Nullable value) {
+		return [Person personWithDic:value];
+	}] array];
+	NSLog(@"persons:%@", persons);
 }
 
 - (void)sequence
@@ -185,7 +314,7 @@
 	}];
 }
 
-- (void)map
+- (void)map1
 {
 	//	[[self.textField.rac_textSignal flattenMap:^__kindof RACSignal * _Nullable(NSString * _Nullable value) {
 	//		return [RACSignal return:[NSString stringWithFormat:@"自定义了返回值:%@", value]];

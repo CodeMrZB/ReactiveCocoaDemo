@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		71C11D1E32E8C4A5D2ABA83C /* libPods-ReactiveCocoaDemoUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5D98AAD0930976EB2F670B /* libPods-ReactiveCocoaDemoUITests.a */; };
+		9E4D01882266D77E004093AC /* data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E4D01872266D77E004093AC /* data.plist */; };
+		9E4D018B2266D823004093AC /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E4D018A2266D823004093AC /* Person.m */; };
 		9E912D082261C68400925B49 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E912D072261C68400925B49 /* AppDelegate.m */; };
 		9E912D0B2261C68400925B49 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E912D0A2261C68400925B49 /* ViewController.m */; };
 		9E912D0E2261C68400925B49 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9E912D0C2261C68400925B49 /* Main.storyboard */; };
@@ -37,6 +39,9 @@
 		13B8E09AD5ED61D2A11C70B0 /* Pods-ReactiveCocoaDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactiveCocoaDemo.debug.xcconfig"; path = "Target Support Files/Pods-ReactiveCocoaDemo/Pods-ReactiveCocoaDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		3A01869432171DEF5EC068F8 /* Pods-ReactiveCocoaDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactiveCocoaDemo.release.xcconfig"; path = "Target Support Files/Pods-ReactiveCocoaDemo/Pods-ReactiveCocoaDemo.release.xcconfig"; sourceTree = "<group>"; };
 		866269D01F7D8DAABEDB52BB /* Pods-ReactiveCocoaDemoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactiveCocoaDemoUITests.release.xcconfig"; path = "Target Support Files/Pods-ReactiveCocoaDemoUITests/Pods-ReactiveCocoaDemoUITests.release.xcconfig"; sourceTree = "<group>"; };
+		9E4D01872266D77E004093AC /* data.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = data.plist; sourceTree = "<group>"; };
+		9E4D01892266D823004093AC /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		9E4D018A2266D823004093AC /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		9E912D032261C68400925B49 /* ReactiveCocoaDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReactiveCocoaDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E912D062261C68400925B49 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9E912D072261C68400925B49 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -133,12 +138,15 @@
 				9E912D302263455C00925B49 /* TempViewModel.m */,
 				9E912D3322637CE300925B49 /* UITextField+ZBKit.h */,
 				9E912D3422637CE300925B49 /* UITextField+ZBKit.m */,
+				9E4D01892266D823004093AC /* Person.h */,
+				9E4D018A2266D823004093AC /* Person.m */,
 				9E912D2A2262314400925B49 /* TempView.h */,
 				9E912D2B2262314400925B49 /* TempView.m */,
 				9E912D2D2262314C00925B49 /* TempView.xib */,
 				9E912D0C2261C68400925B49 /* Main.storyboard */,
 				9E912D0F2261C68500925B49 /* Assets.xcassets */,
 				9E912D112261C68500925B49 /* LaunchScreen.storyboard */,
+				9E4D01872266D77E004093AC /* data.plist */,
 				9E912D142261C68500925B49 /* Info.plist */,
 				9E912D322263459200925B49 /* ReactiveCocoa-Prefix.pch */,
 				9E912D152261C68500925B49 /* main.m */,
@@ -240,6 +248,7 @@
 				9E912D132261C68500925B49 /* LaunchScreen.storyboard in Resources */,
 				9E912D102261C68500925B49 /* Assets.xcassets in Resources */,
 				9E912D2E2262314C00925B49 /* TempView.xib in Resources */,
+				9E4D01882266D77E004093AC /* data.plist in Resources */,
 				9E912D0E2261C68400925B49 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -307,6 +316,7 @@
 			files = (
 				9E912D3522637CE300925B49 /* UITextField+ZBKit.m in Sources */,
 				9E912D0B2261C68400925B49 /* ViewController.m in Sources */,
+				9E4D018B2266D823004093AC /* Person.m in Sources */,
 				9E912D312263455C00925B49 /* TempViewModel.m in Sources */,
 				9E912D162261C68500925B49 /* main.m in Sources */,
 				9E912D2C2262314400925B49 /* TempView.m in Sources */,
