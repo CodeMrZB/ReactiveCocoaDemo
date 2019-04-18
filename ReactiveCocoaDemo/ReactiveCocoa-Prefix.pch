@@ -13,4 +13,5 @@
 	#import <UIKit/UIKit.h>
 	#import <ReactiveObjC.h>
 	#import "UITextField+ZBKit.h"
+	#import <XXNibBridge.h>
 #endif

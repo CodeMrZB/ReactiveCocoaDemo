@@ -16,37 +16,233 @@
 <
 	UITextFieldDelegate
 >
+{
+	RACSubject *_subject;
+}
 
-@property (weak, nonatomic) IBOutlet UIButton *textItem;
-@property (weak, nonatomic) IBOutlet UILabel *testLabel;
-@property (weak, nonatomic) IBOutlet UITextField *textField;
-@property (weak, nonatomic) IBOutlet TempView *tempView;
+@property (weak,   nonatomic) IBOutlet UIButton *textItem;
+@property (weak,   nonatomic) IBOutlet UILabel *testLabel;
+@property (weak,   nonatomic) IBOutlet UITextField *textField;
+@property (weak,   nonatomic) IBOutlet TempView *tempView;
 @property (strong, nonatomic) TempViewModel *tempViewModel;
+@property (strong, nonatomic) RACCommand *command;
 
 @end
 
 @implementation ViewController
-
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
 	// Do any additional setup after loading the view
-	
+	_subject = [RACSubject subject];
+	[[_subject throttle:10] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"%@", x);
+	}];
+	//[self takeUntil1];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+	[self.view endEditing:YES];
 	self.testLabel.text = [NSString stringWithFormat:@"%d", arc4random() % (100 - 2 + 1) + 2];
-    [self throttle];
+	//[self.command execute:@"1"];
+	[self racmulticastConnection];
+}
+
+- (void)racmulticastConnection
+{
+//	RACSignal *signal = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+//		[subscriber sendNext:@"请求数据"];
+//		return nil;
+//	}];
+//	[signal subscribeNext:^(id  _Nullable x) {
+//		NSLog(@"订阅者1:%@", x);
+//	}];
+//	[signal subscribeNext:^(id  _Nullable x) {
+//		NSLog(@"订阅者2:%@", x);
+//	}];
+	
+	RACSignal *signal = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"请求数据!");
+		[subscriber sendNext:@1];
+		return nil;
+	}];
+	RACMulticastConnection *connection = [signal publish];
+	[connection.signal subscribeNext:^(id  _Nullable x) {
+		NSLog(@"订阅者1:%@", x);
+	}];
+	[connection.signal subscribeNext:^(id  _Nullable x) {
+		NSLog(@"订阅者2:%@", x);
+	}];
+	[connection connect];
+}
+
+- (void)takeUntil1
+{
+	__block int num = 0;
+	[[[[RACSignal interval:2 onScheduler:[RACScheduler mainThreadScheduler]] map:^id _Nullable(NSDate * _Nullable value) {
+		NSLog(@"date:%@", value);
+		num++;
+		return @(num);
+	}] takeUntilBlock:^BOOL(id  _Nullable x) {
+		return num >= 20 ? YES : NO;
+	}] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"x:%@", x);
+	}];
+}
+
+- (void)commandDemo
+{
+	self.command = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+		return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+			[subscriber sendNext:@"开始请求数据"];
+			[subscriber sendCompleted];
+			return nil;
+		}];
+	}];
+	
+//	[self.command.executionSignals subscribeNext:^(id  _Nullable x) {
+//		[x subscribeNext:^(id  _Nullable x) {
+//			NSLog(@"x:%@", x);
+//		}];
+//	}];
+	
+	[[self.command.executionSignals switchToLatest] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"x:%@", x);
+	}];
+	
+	[[self.command.executing skip:1] subscribeNext:^(NSNumber * _Nullable x) {
+		if ([x boolValue])
+		{
+			NSLog(@"正在执行");
+		} else
+		{
+			NSLog(@"执行完成");
+		}
+	}];
+}
+
+- (void)reduce
+{
+	RACSignal *signal1 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		[subscriber sendNext:@"1"];
+		return nil;
+	}];
+	
+	RACSignal *signal2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		[subscriber sendNext:@"2"];
+		return nil;
+	}];
+	[[RACSignal combineLatest:@[signal1, signal2] reduce:^id(NSString *str1, NSString *str2){
+		return @(str1.length > 0 && str2.length > 0);
+	}] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"x:%@", x);
+	}];
+}
+
+- (void)combineLatest
+{
+	RACSignal *signal1 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"将要执行signal1");
+		[NSThread sleepForTimeInterval:5];
+		NSLog(@"开始执行signal1");
+		[subscriber sendNext:@"1"];
+		return nil;
+	}];
+	RACSignal *signal2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"开始执行signal2");
+		[subscriber sendNext:@"2"];
+		return nil;
+	}];
+	[[signal1 combineLatestWith:signal2] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"%@", x);
+	}];
+}
+
+- (void)zipwith
+{
+	RACSignal *signal1 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"将要执行signal1");
+		[NSThread sleepForTimeInterval:2];
+		NSLog(@"开始执行signal1");
+		[subscriber sendNext:@"1"];
+		return nil;
+	}];
+	RACSignal *signal2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"开始执行signal2");
+		[subscriber sendNext:@"2"];
+		return nil;
+	}];
+	[[signal1 zipWith:signal2] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"x:%@", x);
+	}];
+}
+
+- (void)merge
+{
+	RACSignal *signal1 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"将要执行signal1");
+		[NSThread sleepForTimeInterval:2];
+		NSLog(@"开始执行signal1");
+		[subscriber sendNext:@"1"];
+		return nil;
+	}];
+	RACSignal *signal2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"开始执行signal2");
+		[subscriber sendNext:@"2"];
+		return nil;
+	}];
+	[[signal1 merge:signal2] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"x:%@", x);
+	}];
+}
+
+- (void)then
+{
+	[[[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		[subscriber sendNext:@"1"];
+		[subscriber sendCompleted];
+		return nil;
+	}] then:^RACSignal * _Nonnull{
+		return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+			[subscriber sendNext:@"2"];
+			return nil;
+		}];
+	}] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"x:%@", x);
+	}];
+}
+
+- (void)concat
+{
+	RACSignal *signal1 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		[NSThread sleepForTimeInterval:3];
+		NSLog(@"signal1开始执行");
+		[subscriber sendNext:@"1"];
+		[subscriber sendCompleted];
+		return [RACDisposable disposableWithBlock:^{
+			NSLog(@"signal1被清理");
+		}];
+	}];
+	
+	RACSignal *signal2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+		NSLog(@"signal2开始执行");
+		[subscriber sendNext:@"2"];
+		return [RACDisposable disposableWithBlock:^{
+			NSLog(@"signal2被清理");
+		}];
+	}];
+	[[signal1 concat:signal2] subscribeNext:^(id  _Nullable x) {
+		NSLog(@"x:%@", x);
+	}];
 }
 
 - (void)throttle
 {
-    RACSubject *subject = [RACSubject subject];
-    [[subject throttle:2] subscribeNext:^(id  _Nullable x) {
-        NSLog(@"%@", x);
-    }];
-    [subject sendNext:@1];
+	static int a = 1;
+	NSLog(@"a:%d", a);
+    [_subject sendNext:@(a)];
+	a++;
 }
 
 - (void)replay

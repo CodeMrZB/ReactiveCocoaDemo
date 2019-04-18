@@ -1,8 +1,8 @@
 //
-//  TempView.h
+//  LoginViewController.h
 //  ReactiveCocoaDemo
 //
-//  Created by 张波 on 2019/4/13.
+//  Created by 张波 on 2019/4/18.
 //  Copyright © 2019 张波. All rights reserved.
 //
 
@@ -10,10 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-IB_DESIGNABLE
-
-@interface TempView : UIView<XXNibBridge>
-
+@interface LoginViewController : UIViewController
 
 @end
 
