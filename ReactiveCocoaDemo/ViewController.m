@@ -37,7 +37,69 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
 	self.testLabel.text = [NSString stringWithFormat:@"%d", arc4random() % (100 - 2 + 1) + 2];
-	[self timeout];
+    [self throttle];
+}
+
+- (void)throttle
+{
+    RACSubject *subject = [RACSubject subject];
+    [[subject throttle:2] subscribeNext:^(id  _Nullable x) {
+        NSLog(@"%@", x);
+    }];
+    [subject sendNext:@1];
+}
+
+- (void)replay
+{
+    RACSignal *signal = [[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        static int a = 1;
+        [subscriber sendNext:@(a)];
+        a++;
+        return nil;
+    }] replay];
+    [signal subscribeNext:^(id  _Nullable x) {
+        NSLog(@"第一个订阅者:%@", x);
+    }];
+    [signal subscribeNext:^(id  _Nullable x) {
+        NSLog(@"第二个订阅者:%@", x);
+    }];
+}
+
+- (void)retry
+{
+    //  只要失败，就会重新执行创建信号中的block，直到成功
+    __block int i = 0;
+    [[[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        if (i == 10)
+        {
+            [subscriber sendNext:@"1"];
+        } else
+        {
+            NSLog(@"接收到错误");
+            NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:1003 userInfo:@{@"msg":@"请求失败"}];
+            [subscriber sendError:error];
+        }
+        NSLog(@"接收到错误");
+        NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:1003 userInfo:@{@"msg":@"请求失败"}];
+        [subscriber sendError:error];
+        i++;
+        return nil;
+    }] retry] subscribeNext:^(id  _Nullable x) {
+        NSLog(@"%@", x);
+    } error:^(NSError * _Nullable error) {
+        NSLog(@"error:%@", error);
+    }];
+}
+
+- (void)switchToLatest
+{
+    RACSubject *subject = [RACSubject subject];
+    RACSubject *signal = [RACSubject subject];
+    [subject.switchToLatest subscribeNext:^(id  _Nullable x) {
+        NSLog(@"%@", x);
+    }];
+    [subject sendNext:signal];
+    [signal sendNext:@"1"];
 }
 
 - (void)timeout
@@ -53,7 +115,12 @@
 
 - (void)delay
 {
-	
+    [[[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        [subscriber sendNext:@"1"];
+        return nil;
+    }] delay:2] subscribeNext:^(id  _Nullable x) {
+        NSLog(@"%@", x);
+    }];
 }
 
 - (void)skip
