@@ -24,6 +24,7 @@
 @property (weak,   nonatomic) IBOutlet UILabel *testLabel;
 @property (weak,   nonatomic) IBOutlet UITextField *textField;
 @property (weak,   nonatomic) IBOutlet TempView *tempView;
+@property (weak,   nonatomic) IBOutlet UIButton *operateItem;
 @property (strong, nonatomic) TempViewModel *tempViewModel;
 @property (strong, nonatomic) RACCommand *command;
 
@@ -39,6 +40,8 @@
 		NSLog(@"%@", x);
 	}];
 	//[self takeUntil1];
+	[self tempViewDemo];
+	[self operateItemEvent];
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -46,7 +49,20 @@
 	[self.view endEditing:YES];
 	self.testLabel.text = [NSString stringWithFormat:@"%d", arc4random() % (100 - 2 + 1) + 2];
 	//[self.command execute:@"1"];
-	[self racmulticastConnection];
+	[self liftSelector];
+}
+
+- (void)operateItemEvent
+{
+	@weakify(self);
+	[[self.operateItem rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIButton * _Nullable x) {
+		@strongify(self);
+		x.selected = !x.selected;
+		x.backgroundColor = x.selected ? [UIColor yellowColor] : [UIColor cyanColor];
+		[x setTitle:x.selected ? @"hide" : @"show" forState:UIControlStateNormal];
+		NSLog(@"状态:%@", x.selected ? @"选中" : @"未选中");
+		self.tempView.hidden = !x.selected;
+	}];
 }
 
 - (void)racmulticastConnection
@@ -496,7 +512,7 @@
 	}];
 	RACSignal *signal3 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
 		NSLog(@"开始任务3");
-		[NSThread sleepForTimeInterval:1];
+		[NSThread sleepForTimeInterval:10];
 		[subscriber sendNext:@"3"];
 		NSLog(@"完成任务3");
 		return nil;
@@ -522,11 +538,38 @@
 
 - (void)tempViewDemo
 {
-	@weakify(self);
-	[[self.tempView rac_signalForSelector:NSSelectorFromString(@"itemClick")] subscribeNext:^(RACTuple * _Nullable x) {
-		NSLog(@"点击了按钮");
-		@strongify(self);
-		[self.tempViewModel.loginCommand execute:@"登录操作"];
+//	@weakify(self);
+//	[[self.tempView rac_signalForSelector:NSSelectorFromString(@"itemClick:")] subscribeNext:^(RACTuple * _Nullable x) {
+//		NSLog(@"点击了按钮:%@", x);
+//		UIButton *item = x.first;
+//		NSInteger tag = item.tag - 1000;
+//		switch (tag)
+//		{
+//			case 0:
+//			{
+//				NSLog(@"点击了第一个按钮");
+//			}
+//				break;
+//			case 1:
+//			{
+//				NSLog(@"点击了第二个按钮");
+//			}
+//				break;
+//			default:
+//				break;
+//		}
+//		@strongify(self);
+//		[self.tempViewModel.loginCommand execute:@"登录操作"];
+//	}];
+	
+	[[self.tempView.itemClickSubject throttle:0.5] subscribeNext:^(NSNumber * x) {
+		NSLog(@"x:%@", x);
+		NSInteger tag = [x integerValue];
+		if (tag == 0) {
+			NSLog(@"点击了第一个按钮");
+		} else if (tag == 1) {
+			NSLog(@"点击了第二个按钮");
+		}
 	}];
 }
 

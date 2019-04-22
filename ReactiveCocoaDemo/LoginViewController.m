@@ -7,26 +7,37 @@
 //
 
 #import "LoginViewController.h"
+#import "LoginView.h"
+#import "LoginViewModel.h"
 
 @interface LoginViewController ()
+
+@property (weak,   nonatomic) IBOutlet LoginView *loginView;
+@property (strong, nonatomic) LoginViewModel *loginViewModel;
 
 @end
 
 @implementation LoginViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+	[self bindViewModel];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)bindViewModel
+{
+	self.loginView.loginViewModel = self.loginViewModel;
 }
-*/
+
+#pragma mark - Getter
+- (LoginViewModel *)loginViewModel
+{
+	if (!_loginViewModel)
+	{
+		_loginViewModel = [[LoginViewModel alloc] init];
+	}
+	return _loginViewModel;
+}
 
 @end

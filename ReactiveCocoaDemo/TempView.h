@@ -14,6 +14,7 @@ IB_DESIGNABLE
 
 @interface TempView : UIView<XXNibBridge>
 
+@property (strong, nonatomic) RACSubject *itemClickSubject;
 
 @end
 

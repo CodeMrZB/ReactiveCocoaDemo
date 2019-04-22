@@ -60,15 +60,23 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fp3-t8-I5Y">
+                                <rect key="frame" x="237" y="138" width="63" height="34"/>
+                                <state key="normal" title="operate">
+                                    <color key="titleColor" red="0.97443616209999995" green="0.71109279430000005" blue="0.78828602830000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="rny-7L-Gms" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="6GL-NR-9OW"/>
                             <constraint firstItem="h0w-70-eEj" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="165" id="CZp-7G-XT1"/>
+                            <constraint firstItem="fp3-t8-I5Y" firstAttribute="leading" secondItem="pxw-xE-sjU" secondAttribute="trailing" constant="30" id="EEY-1M-eMY"/>
                             <constraint firstItem="pxw-xE-sjU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="161" id="RFw-eK-Ydg"/>
                             <constraint firstItem="pxw-xE-sjU" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="h0w-70-eEj" secondAttribute="trailing" id="T0u-rN-h6C"/>
                             <constraint firstItem="Kdu-sy-S74" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="15" id="Vh5-wP-BIz"/>
                             <constraint firstItem="h0w-70-eEj" firstAttribute="top" secondItem="pxw-xE-sjU" secondAttribute="bottom" constant="89" id="ae9-qT-wNq"/>
+                            <constraint firstItem="fp3-t8-I5Y" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="50" id="eAp-4d-Urd"/>
                             <constraint firstItem="pxw-xE-sjU" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="50" id="eXS-9o-h9G"/>
                             <constraint firstItem="Kdu-sy-S74" firstAttribute="top" secondItem="h0w-70-eEj" secondAttribute="bottom" constant="100" id="ecZ-SV-EwC"/>
                             <constraint firstItem="rny-7L-Gms" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="50" id="fqY-Cr-jvw"/>
@@ -79,6 +87,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Home" id="WK5-uU-Z7g"/>
                     <connections>
+                        <outlet property="operateItem" destination="fp3-t8-I5Y" id="eOw-di-Yqf"/>
                         <outlet property="tempView" destination="rny-7L-Gms" id="E2v-9Q-mMq"/>
                         <outlet property="testLabel" destination="h0w-70-eEj" id="DZ3-DH-rf1"/>
                         <outlet property="textField" destination="Kdu-sy-S74" id="aHK-24-STr"/>
@@ -87,7 +96,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1709" y="49"/>
+            <point key="canvasLocation" x="1708.6956521739132" y="48.883928571428569"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="79C-GZ-JeY">
@@ -157,11 +166,8 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WX5-x9-W9Z" customClass="LoginView">
-                                <rect key="frame" x="15" y="256" width="384" height="384"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" red="0.81960784310000001" green="0.33097689879999997" blue="0.66650869310000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="WX5-x9-W9Z" secondAttribute="height" multiplier="1:1" id="i3X-ZU-4Tr"/>
-                                </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                         <integer key="value" value="10"/>
@@ -171,13 +177,17 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="WX5-x9-W9Z" firstAttribute="leading" secondItem="ngI-eX-cH3" secondAttribute="leading" constant="15" id="FoB-DH-v2v"/>
-                            <constraint firstItem="ngI-eX-cH3" firstAttribute="trailing" secondItem="WX5-x9-W9Z" secondAttribute="trailing" constant="15" id="Oyv-RW-nZ3"/>
-                            <constraint firstItem="WX5-x9-W9Z" firstAttribute="centerY" secondItem="9ab-iC-c42" secondAttribute="centerY" id="z6T-8D-1zC"/>
+                            <constraint firstItem="ngI-eX-cH3" firstAttribute="bottom" secondItem="WX5-x9-W9Z" secondAttribute="bottom" id="E8F-rf-qht"/>
+                            <constraint firstItem="WX5-x9-W9Z" firstAttribute="leading" secondItem="ngI-eX-cH3" secondAttribute="leading" id="eva-nv-6zH"/>
+                            <constraint firstItem="ngI-eX-cH3" firstAttribute="trailing" secondItem="WX5-x9-W9Z" secondAttribute="trailing" id="jSt-7t-JXz"/>
+                            <constraint firstItem="WX5-x9-W9Z" firstAttribute="top" secondItem="ngI-eX-cH3" secondAttribute="top" id="zPK-ML-Wfu"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ngI-eX-cH3"/>
                     </view>
                     <navigationItem key="navigationItem" title="Mine" id="7DJ-uj-zdW"/>
+                    <connections>
+                        <outlet property="loginView" destination="WX5-x9-W9Z" id="j03-wJ-TPo"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XHc-oK-0TT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -189,6 +199,7 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="Tu9-Ma-Zft" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Uaj-Jc-Adl">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="barTintColor" red="0.19587773880000001" green="0.88235294119999996" blue="0.26016633630000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

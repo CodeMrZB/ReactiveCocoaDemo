@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+@class LoginViewModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
 IB_DESIGNABLE
 
 @interface LoginView : UIView<XXNibBridge>
+
+@property (strong, nonatomic) LoginViewModel *loginViewModel;
 
 @end
 
