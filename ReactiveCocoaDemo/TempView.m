@@ -7,6 +7,7 @@
 //
 
 #import "TempView.h"
+#include <stdio.h>
 
 @implementation TempView
 
